@@ -84,7 +84,7 @@ function CheckoutModal({ product, onClose }) {
           <div style={{ textAlign: "center", padding: "20px 0" }}>
             <div style={{ width: "60px", height: "60px", background: "#30D158", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "26px", color: "#fff" }}>✓</div>
             <div style={{ fontSize: "22px", fontWeight: "700", color: "#1d1d1f", marginBottom: "8px" }}>Order Complete!</div>
-            <div style={{ color: "#86868b", fontSize: "14px", marginBottom: "28px" }}>Download link sent to <strong style={{ color: "#1d1d1f" }}>{email}</strong></div>
+            <div style={{ color: "#1d1d1f", fontSize: "14px", marginBottom: "28px" }}>Download link sent to <strong style={{ color: "#1d1d1f" }}>{email}</strong></div>
             <button onClick={onClose} style={{ background: "#1d1d1f", color: "#fff", border: "none", borderRadius: "980px", padding: "13px 36px", fontWeight: "600", cursor: "pointer", fontSize: "15px", fontFamily: "inherit" }}>Done</button>
           </div>
         ) : (
@@ -92,7 +92,7 @@ function CheckoutModal({ product, onClose }) {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
               <div>
                 <div style={{ fontSize: "17px", fontWeight: "700", color: "#1d1d1f" }}>{product.title}</div>
-                <div style={{ color: "#86868b", fontSize: "13px", marginTop: "2px" }}>{product.format}</div>
+                <div style={{ color: "#1d1d1f", fontSize: "13px", marginTop: "2px" }}>{product.format}</div>
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontSize: "24px", fontWeight: "800", color: "#1d1d1f" }}>${product.price}</div>
@@ -101,20 +101,20 @@ function CheckoutModal({ product, onClose }) {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div>
-                <label style={{ color: "#86868b", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>Email</label>
+                <label style={{ color: "#1d1d1f", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>Email</label>
                 <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={inputStyle} />
               </div>
               <div>
-                <label style={{ color: "#86868b", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>Card Number</label>
+                <label style={{ color: "#1d1d1f", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>Card Number</label>
                 <input value={cardNumber} onChange={e => setCardNumber(formatCard(e.target.value))} placeholder="1234 5678 9012 3456" style={inputStyle} />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ color: "#86868b", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>Expiry</label>
+                  <label style={{ color: "#1d1d1f", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>Expiry</label>
                   <input value={expiry} onChange={e => setExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" style={inputStyle} />
                 </div>
                 <div>
-                  <label style={{ color: "#86868b", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>CVC</label>
+                  <label style={{ color: "#1d1d1f", fontSize: "12px", fontWeight: "600", letterSpacing: "0.04em", textTransform: "uppercase" }}>CVC</label>
                   <input value={cvc} onChange={e => setCvc(e.target.value.replace(/\D/g, "").slice(0, 3))} placeholder="•••" style={inputStyle} />
                 </div>
               </div>
@@ -176,11 +176,11 @@ export default function App() {
       {/* NAV */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(245,245,247,0.88)", backdropFilter: "saturate(180%) blur(20px)", borderBottom: "1px solid rgba(0,0,0,0.07)", padding: "0 48px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "56px" }}>
         <div style={{ fontSize: "20px", fontWeight: "800", letterSpacing: "-0.04em" }}>zurya</div>
-        <div style={{ display: "flex", gap: "28px", fontSize: "13px", color: "#86868b", fontWeight: "500" }}>
+        <div style={{ display: "flex", gap: "28px", fontSize: "13px", color: "#1d1d1f", fontWeight: "500" }}>
           {["Shop", "About", "FAQ"].map(item => (
             <span key={item} style={{ cursor: "pointer", transition: "color 0.15s" }}
               onMouseEnter={e => e.target.style.color = "#1d1d1f"}
-              onMouseLeave={e => e.target.style.color = "#86868b"}
+              onMouseLeave={e => e.target.style.color = "#1d1d1f"}
             >{item}</span>
           ))}
         </div>
@@ -196,7 +196,7 @@ export default function App() {
             <h1 style={{ fontSize: "clamp(40px, 6vw, 72px)", fontWeight: "800", lineHeight: 1.05, letterSpacing: "-0.04em", color: "#1d1d1f", marginBottom: "20px" }}>
               Your wealth,<br /><span style={{ color: accent }}>starts here.</span>
             </h1>
-            <p style={{ fontSize: "17px", color: "#86868b", lineHeight: 1.65, marginBottom: "36px", maxWidth: "460px" }}>
+            <p style={{ fontSize: "17px", color: "#1d1d1f", lineHeight: 1.65, marginBottom: "36px", maxWidth: "460px" }}>
               Practical eBooks on wealth building, budgeting, side hustles and financial mindset — written for real people, not finance bros.
             </p>
             <button className="cta-btn" onClick={() => document.getElementById("products").scrollIntoView({ behavior: "smooth" })} style={{ background: accent, color: "#fff", border: "none", borderRadius: "14px", padding: "14px 28px", fontWeight: "700", fontSize: "16px", cursor: "pointer", fontFamily: "inherit", boxShadow: "0 4px 20px rgba(10,132,255,0.3)", marginBottom: "28px", display: "block" }}>
@@ -204,7 +204,7 @@ export default function App() {
             </button>
             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
               {["⚡ Instant delivery", "🔒 Secure checkout", "∞ Lifetime access"].map(t => (
-                <span key={t} style={{ fontSize: "13px", color: "#86868b", fontWeight: "500" }}>{t}</span>
+                <span key={t} style={{ fontSize: "13px", color: "#1d1d1f", fontWeight: "500" }}>{t}</span>
               ))}
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function App() {
               <div style={{ fontSize: "40px", marginBottom: "16px" }}>📘</div>
               <div style={{ color: accent, fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em", marginBottom: "8px" }}>ZURYA</div>
               <div style={{ color: "#fff", fontSize: "16px", fontWeight: "700", lineHeight: 1.3, letterSpacing: "-0.02em" }}>Wealth Before 30</div>
-              <div style={{ color: "#86868b", fontSize: "11px", marginTop: "8px" }}>120 pages · PDF</div>
+              <div style={{ color: "#1d1d1f", fontSize: "11px", marginTop: "8px" }}>120 pages · PDF</div>
               <div style={{ position: "absolute", bottom: "-10px", right: "-10px", background: "#FF9F0A", color: "#fff", borderRadius: "980px", padding: "4px 12px", fontSize: "12px", fontWeight: "700", boxShadow: "0 4px 12px rgba(255,159,10,0.4)" }}>$14</div>
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function App() {
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", letterSpacing: "-0.03em", marginBottom: "12px" }}>What you'll learn</h2>
-            <p style={{ color: "#86868b", fontSize: "16px" }}>Everything you need to start building wealth — in plain English</p>
+            <p style={{ color: "#1d1d1f", fontSize: "16px" }}>Everything you need to start building wealth — in plain English</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "16px" }}>
             {learnPoints.map((p, i) => (
@@ -243,7 +243,7 @@ export default function App() {
         <div style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", gap: "60px", alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: "260px" }}>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", letterSpacing: "-0.03em", marginBottom: "12px" }}>Inside the book</h2>
-            <p style={{ color: "#86868b", fontSize: "16px", marginBottom: "32px" }}>No fluff, no theory overload — just clear, actionable content</p>
+            <p style={{ color: "#1d1d1f", fontSize: "16px", marginBottom: "32px" }}>No fluff, no theory overload — just clear, actionable content</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {insideBook.map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -258,12 +258,12 @@ export default function App() {
               <div style={{ fontSize: "32px", marginBottom: "16px" }}>📘</div>
               <div style={{ color: accent, fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em", marginBottom: "8px" }}>ZURYA · PREVIEW</div>
               <div style={{ color: "#fff", fontSize: "18px", fontWeight: "700", marginBottom: "6px", letterSpacing: "-0.02em" }}>Wealth Before 30</div>
-              <div style={{ color: "#86868b", fontSize: "13px", marginBottom: "20px" }}>Chapter 1: Your money mindset</div>
+              <div style={{ color: "#1d1d1f", fontSize: "13px", marginBottom: "20px" }}>Chapter 1: Your money mindset</div>
               <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "10px", padding: "14px" }}>
                 <div style={{ color: "#fff", fontSize: "13px", lineHeight: 1.6, opacity: 0.7 }}>"The first step to building wealth is not earning more — it's understanding where your money goes every single day..."</div>
               </div>
               <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#86868b", fontSize: "12px" }}>120 pages</span>
+                <span style={{ color: "#1d1d1f", fontSize: "12px" }}>120 pages</span>
                 <span style={{ background: accent, color: "#fff", borderRadius: "980px", padding: "4px 14px", fontSize: "13px", fontWeight: "700" }}>$14</span>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default function App() {
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", letterSpacing: "-0.03em", marginBottom: "12px" }}>What readers say</h2>
-            <p style={{ color: "#86868b", fontSize: "16px" }}>Real people, real results</p>
+            <p style={{ color: "#1d1d1f", fontSize: "16px" }}>Real people, real results</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
             {testimonials.map((t, i) => (
@@ -298,8 +298,8 @@ export default function App() {
         <div style={{ maxWidth: "680px", margin: "0 auto", textAlign: "center" }}>
           <div style={{ width: "72px", height: "72px", background: accent + "20", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", fontWeight: "800", color: accent, margin: "0 auto 20px" }}>M</div>
           <h2 style={{ fontSize: "clamp(24px, 3vw, 36px)", fontWeight: "800", letterSpacing: "-0.03em", marginBottom: "16px" }}>About the author</h2>
-          <p style={{ fontSize: "16px", color: "#86868b", lineHeight: 1.7 }}>Hi, I'm <strong style={{ color: "#1d1d1f" }}>Maanesh</strong>. I create practical guides to help students and young people build wealth, discipline, and financial freedom early.</p>
-          <p style={{ fontSize: "16px", color: "#86868b", lineHeight: 1.7, marginTop: "12px" }}>No theory. Only practical systems that work in the real world.</p>
+          <p style={{ fontSize: "16px", color: "#1d1d1f", lineHeight: 1.7 }}>Hi, I'm <strong style={{ color: "#1d1d1f" }}>Maanesh</strong>. I create practical guides to help students and young people build wealth, discipline, and financial freedom early.</p>
+          <p style={{ fontSize: "16px", color: "#1d1d1f", lineHeight: 1.7, marginTop: "12px" }}>No theory. Only practical systems that work in the real world.</p>
         </div>
       </div>
 
@@ -308,7 +308,7 @@ export default function App() {
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: "800", letterSpacing: "-0.03em", marginBottom: "12px" }}>Browse all guides</h2>
-            <p style={{ color: "#86868b", fontSize: "16px" }}>Pick what you need — every guide is actionable and beginner-friendly</p>
+            <p style={{ color: "#1d1d1f", fontSize: "16px" }}>Pick what you need — every guide is actionable and beginner-friendly</p>
           </div>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "32px", justifyContent: "center" }}>
             {tagFilters.map(f => (
@@ -322,10 +322,10 @@ export default function App() {
                 <div style={{ padding: "24px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                     <span style={{ background: p.accent + "15", color: p.accent, borderRadius: "8px", padding: "3px 10px", fontSize: "12px", fontWeight: "700" }}>{p.tag}</span>
-                    {p.badge && <span style={{ background: "#f5f5f7", color: "#86868b", borderRadius: "8px", padding: "3px 10px", fontSize: "12px", fontWeight: "600" }}>{p.badge}</span>}
+                    {p.badge && <span style={{ background: "#f5f5f7", color: "#1d1d1f", borderRadius: "8px", padding: "3px 10px", fontSize: "12px", fontWeight: "600" }}>{p.badge}</span>}
                   </div>
                   <h2 style={{ fontSize: "18px", fontWeight: "700", color: "#1d1d1f", lineHeight: 1.25, letterSpacing: "-0.02em", marginBottom: "8px" }}>{p.title}</h2>
-                  <p style={{ color: "#86868b", fontSize: "13px", lineHeight: 1.55, marginBottom: "20px" }}>{p.subtitle}</p>
+                  <p style={{ color: "#1d1d1f", fontSize: "13px", lineHeight: 1.55, marginBottom: "20px" }}>{p.subtitle}</p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid #f5f5f7", paddingTop: "14px", marginBottom: "16px" }}>
                     {[p.pages, p.format].map((m, i) => <span key={i} style={{ color: "#c7c7cc", fontSize: "12px", fontWeight: "500" }}>{m}</span>)}
                   </div>
@@ -350,7 +350,7 @@ export default function App() {
       <div className="sp" style={{ padding: "80px 48px", background: "#1d1d1f", textAlign: "center" }}>
         <div style={{ maxWidth: "600px", margin: "0 auto" }}>
           <h2 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: "800", letterSpacing: "-0.04em", color: "#fff", marginBottom: "16px", lineHeight: 1.1 }}>Start building your<br />wealth today.</h2>
-          <p style={{ color: "#86868b", fontSize: "16px", marginBottom: "36px", lineHeight: 1.6 }}>Join thousands of readers who have already started their journey to financial freedom.</p>
+          <p style={{ color: "#1d1d1f", fontSize: "16px", marginBottom: "36px", lineHeight: 1.6 }}>Join thousands of readers who have already started their journey to financial freedom.</p>
           <button className="cta-btn" onClick={() => document.getElementById("products").scrollIntoView({ behavior: "smooth" })} style={{ background: accent, color: "#fff", border: "none", borderRadius: "14px", padding: "16px 36px", fontWeight: "700", fontSize: "17px", cursor: "pointer", fontFamily: "inherit", boxShadow: "0 8px 24px rgba(10,132,255,0.35)" }}>
             Get Instant Access →
           </button>
