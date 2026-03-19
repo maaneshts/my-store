@@ -355,7 +355,7 @@ export default function App() {
             Get Instant Access →
           </button>
           <div style={{ display: "flex", gap: "20px", justifyContent: "center", marginTop: "20px", flexWrap: "wrap" }}>
-            {["⚡ Instant delivery", "🛡️ 7-day refund", "🔒 Secure checkout"].map(t => (
+            {["⚡ Instant delivery", "🔒 Secure checkout"].map(t => (
               <span key={t} style={{ fontSize: "13px", color: "#555", fontWeight: "500" }}>{t}</span>
             ))}
           </div>
