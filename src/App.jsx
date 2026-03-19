@@ -303,20 +303,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* GUARANTEE */}
-      <div className="sp" style={{ padding: "40px 48px", background: "#fff" }}>
-        <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-          <div style={{ background: "#F5F5F7", borderRadius: "20px", padding: "32px", display: "flex", gap: "24px", alignItems: "center", border: "1px solid rgba(0,0,0,0.04)" }}>
-            <div style={{ width: "64px", height: "64px", background: "#30D15820", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", flexShrink: 0 }}>🛡️</div>
-            <div>
-              <div style={{ fontSize: "18px", fontWeight: "700", marginBottom: "6px" }}>7-day money back guarantee</div>
-              <div style={{ fontSize: "14px", color: "#86868b", lineHeight: 1.6 }}>Not happy? Get a full refund within 7 days, no questions asked. Zero risk.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* PRODUCTS */}
+           {/* PRODUCTS */}
       <div id="products" className="sp" style={{ padding: "60px 48px 40px", background: "#F5F5F7" }}>
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
