@@ -156,7 +156,7 @@ export default function App() {
   const filtered = products.filter(p => tagFilter === "All" || p.tag === tagFilter);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F5F5F7", fontFamily: "'Poppins', -apple-system, sans-serif", color: "#1d1d1f", opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease" }}>
+    <div style={{ minHeight: "100vh", background: "#F5F5F7", fontFamily: "'Poppins', -apple-system, sans-serif", color: "#1d1d1f", opacity: 1, transition: "opacity 0.4s ease" }}>
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
