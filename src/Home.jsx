@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ACCENT = "#0A84FF";
+const SUPABASE_URL = "https://zhetlpiamcrkfjmairjb.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpoZXRscGlhbWNya2ZqbWFpcmpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyOTc4NDcsImV4cCI6MjA5MDg3Mzg0N30.XygGGULYYtD42-FHSQGuABpBBpM2s2fVYyt9X8XrSr0";
 
 const learnPoints = [
   { icon: "💰", text: "How to save money fast even on a small income" },
@@ -19,10 +21,10 @@ const insideBook = [
   { icon: "⬇️", label: "Instant PDF download" },
 ];
 
-const testimonials = [
-  { name: "Rahul K", text: "This changed how I see money. I paid off my debt in 4 months after reading this.", stars: 5 },
-  { name: "Arjun P", text: "Very practical and simple. No complicated jargon — just clear actionable steps.", stars: 5 },
-  { name: "Sneha R", text: "Worth more than the price. I made back 10x the cost in my first side hustle month.", stars: 5 },
+const fallbackTestimonials = [
+  { id: 1, name: "Rahul K", text: "This changed how I see money. I paid off my debt in 4 months after reading this.", rating: 5, product: "Wealth Before 30" },
+  { id: 2, name: "Arjun P", text: "Very practical and simple. No complicated jargon — just clear actionable steps.", rating: 5, product: "The Side Hustle Blueprint" },
+  { id: 3, name: "Sneha R", text: "Worth more than the price. I made back 10x the cost in my first side hustle month.", rating: 5, product: "Budget Like a CEO" },
 ];
 
 const faqItems = [
@@ -220,6 +222,7 @@ export default function Home() {
   const [showFAQ, setShowFAQ] = useState(false);
   const [checkout, setCheckout] = useState(null);
   const [loaded, setLoaded] = useState(false);
+  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
 
   useEffect(() => {
     document.documentElement.style.width = "100%";
@@ -232,7 +235,19 @@ export default function Home() {
     link.rel = "stylesheet";
     document.head.appendChild(link);
     setTimeout(() => setLoaded(true), 80);
+    fetchTopReviews();
   }, []);
+
+  const fetchTopReviews = async () => {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/reviews?approved=eq.true&rating=gte.4&order=rating.desc,created_at.desc&limit=3`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      );
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) setTestimonials(data);
+    } catch (e) { /* use fallback */ }
+  };
 
   const S = {
     h2: { fontSize: "clamp(28px, 4vw, 44px)", fontWeight: "800", letterSpacing: "-0.03em", color: "#111", marginBottom: "12px" },
@@ -268,6 +283,7 @@ export default function Home() {
         <div style={{ fontSize: "21px", fontWeight: "800", letterSpacing: "-0.04em", color: "#111", cursor: "pointer" }} onClick={() => navigate("/")}>zurya</div>
         <div style={{ display: "flex", gap: "32px", fontSize: "14px", color: "#6e6e73", fontWeight: "500" }}>
           <span className="nav-link" onClick={() => navigate("/shop")}>Shop</span>
+          <span className="nav-link" onClick={() => navigate("/reviews")}>Reviews</span>
           <span className="nav-link" onClick={() => setShowAbout(true)}>About</span>
           <span className="nav-link" onClick={() => setShowFAQ(true)}>FAQ</span>
         </div>
@@ -372,17 +388,29 @@ export default function Home() {
             <h2 style={S.h2}>What readers say</h2>
             <p style={S.sub}>Real people, real results</p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "16px", marginBottom: "32px" }}>
             {testimonials.map((t, i) => (
-              <div key={i} style={{ background: "#F5F5F7", borderRadius: "20px", padding: "32px" }}>
-                <Stars count={t.stars} />
-                <p style={{ fontSize: "16px", color: "#111", lineHeight: 1.65, fontWeight: "500", marginBottom: "20px" }}>"{t.text}"</p>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div style={{ width: "38px", height: "38px", background: ACCENT + "20", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "15px", fontWeight: "700", color: ACCENT }}>{t.name[0]}</div>
-                  <span style={{ fontSize: "14px", fontWeight: "600", color: "#6e6e73" }}>— {t.name}</span>
+              <div key={t.id || i} style={{ background: "#F5F5F7", borderRadius: "20px", padding: "32px" }}>
+                <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
+                  {[1,2,3,4,5].map(s => <span key={s} style={{ color: s <= (t.rating || t.stars || 5) ? "#FF9F0A" : "#e0e0e0", fontSize: "16px" }}>★</span>)}
+                </div>
+                <p style={{ fontSize: "16px", color: "#111", lineHeight: 1.65, fontWeight: "500", marginBottom: "20px" }}>"{t.text || t.review}"</p>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ width: "38px", height: "38px", background: ACCENT + "20", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "15px", fontWeight: "700", color: ACCENT }}>{t.name[0]}</div>
+                    <span style={{ fontSize: "14px", fontWeight: "600", color: "#6e6e73" }}>— {t.name}</span>
+                  </div>
+                  {t.product && <span style={{ background: "#fff", color: "#6e6e73", borderRadius: "8px", padding: "3px 10px", fontSize: "11px", fontWeight: "600" }}>{t.product}</span>}
                 </div>
               </div>
             ))}
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <button onClick={() => navigate("/reviews")} style={{ background: "#F5F5F7", color: "#111", border: "1px solid rgba(0,0,0,0.08)", borderRadius: "980px", padding: "11px 28px", fontWeight: "600", fontSize: "14px", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }}
+              onMouseEnter={e => { e.target.style.background = "#1d1d1f"; e.target.style.color = "#fff"; }}
+              onMouseLeave={e => { e.target.style.background = "#F5F5F7"; e.target.style.color = "#111"; }}>
+              See all reviews →
+            </button>
           </div>
         </div>
       </div>
