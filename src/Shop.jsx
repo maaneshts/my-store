@@ -20,23 +20,39 @@ const products = [
 
 const tagFilters = ["All", "Wealth", "Budgeting", "Income", "Mindset", "Fitness", "Productivity", "Relationships", "Templates", "Checklists"];
 
-const inputStyle = {
-  width: "100%", background: "#f5f5f7", border: "1.5px solid transparent",
-  borderRadius: "12px", color: "#1d1d1f", padding: "12px 14px",
-  fontSize: "15px", outline: "none", marginTop: "6px",
-  boxSizing: "border-box", fontFamily: "inherit",
-};
+// Products that have real Stripe prices set up
+const STRIPE_ENABLED = ["Wealth Before 30"];
 
-function CheckoutModal({ product, onClose }) {
+function EmailModal({ product, onClose }) {
   const [email, setEmail] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvc, setCvc] = useState("");
-  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handlePay = () => { if (email && cardNumber && expiry && cvc) setDone(true); };
-  const formatCard = (v) => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
-  const formatExpiry = (v) => { const d = v.replace(/\D/g, "").slice(0, 4); return d.length >= 2 ? d.slice(0, 2) + "/" + d.slice(2) : d; };
+  const handleCheckout = async () => {
+    if (!email || !email.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productTitle: product.title, customerEmail: email }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
+        setLoading(false);
+      }
+    } catch (e) {
+      setError("Network error. Please check your connection.");
+      setLoading(false);
+    }
+  };
 
   return (
     <div onClick={(e) => e.target === e.currentTarget && onClose()} style={{
@@ -46,54 +62,76 @@ function CheckoutModal({ product, onClose }) {
       animation: "fadeIn 0.2s ease", padding: "20px",
     }}>
       <div style={{ background: "#fff", borderRadius: "24px", padding: "40px", width: "100%", maxWidth: "420px", boxShadow: "0 40px 80px rgba(0,0,0,0.18)", animation: "slideUp 0.3s ease" }}>
-        {done ? (
-          <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <div style={{ width: "64px", height: "64px", background: "#30D158", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "28px", color: "#fff" }}>✓</div>
-            <div style={{ fontSize: "22px", fontWeight: "700", color: "#111", marginBottom: "8px" }}>Order Complete!</div>
-            <div style={{ color: "#6e6e73", fontSize: "14px", marginBottom: "28px" }}>Download link sent to <strong style={{ color: "#111" }}>{email}</strong></div>
-            <button onClick={onClose} style={{ background: "#111", color: "#fff", border: "none", borderRadius: "980px", padding: "13px 36px", fontWeight: "600", cursor: "pointer", fontSize: "15px", fontFamily: "inherit" }}>Done</button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
+          <div>
+            <div style={{ fontSize: "17px", fontWeight: "700", color: "#111" }}>{product.title}</div>
+            <div style={{ color: "#6e6e73", fontSize: "13px", marginTop: "2px" }}>{product.format}</div>
           </div>
-        ) : (
-          <>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
-              <div>
-                <div style={{ fontSize: "17px", fontWeight: "700", color: "#111" }}>{product.title}</div>
-                <div style={{ color: "#6e6e73", fontSize: "13px", marginTop: "2px" }}>{product.format}</div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "26px", fontWeight: "800", color: "#111" }}>${product.price}</div>
-                {product.originalPrice && <div style={{ color: "#c7c7cc", fontSize: "13px", textDecoration: "line-through" }}>${product.originalPrice}</div>}
-              </div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div>
-                <label style={{ color: "#6e6e73", fontSize: "11px", fontWeight: "700", letterSpacing: "0.06em", textTransform: "uppercase" }}>Email</label>
-                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={inputStyle} onFocus={e => e.target.style.border = `1.5px solid ${product.accent}`} onBlur={e => e.target.style.border = "1.5px solid transparent"} />
-              </div>
-              <div>
-                <label style={{ color: "#6e6e73", fontSize: "11px", fontWeight: "700", letterSpacing: "0.06em", textTransform: "uppercase" }}>Card Number</label>
-                <input value={cardNumber} onChange={e => setCardNumber(formatCard(e.target.value))} placeholder="1234 5678 9012 3456" style={inputStyle} onFocus={e => e.target.style.border = `1.5px solid ${product.accent}`} onBlur={e => e.target.style.border = "1.5px solid transparent"} />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <div>
-                  <label style={{ color: "#6e6e73", fontSize: "11px", fontWeight: "700", letterSpacing: "0.06em", textTransform: "uppercase" }}>Expiry</label>
-                  <input value={expiry} onChange={e => setExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" style={inputStyle} onFocus={e => e.target.style.border = `1.5px solid ${product.accent}`} onBlur={e => e.target.style.border = "1.5px solid transparent"} />
-                </div>
-                <div>
-                  <label style={{ color: "#6e6e73", fontSize: "11px", fontWeight: "700", letterSpacing: "0.06em", textTransform: "uppercase" }}>CVC</label>
-                  <input value={cvc} onChange={e => setCvc(e.target.value.replace(/\D/g, "").slice(0, 3))} placeholder="•••" style={inputStyle} onFocus={e => e.target.style.border = `1.5px solid ${product.accent}`} onBlur={e => e.target.style.border = "1.5px solid transparent"} />
-                </div>
-              </div>
-              <button onClick={handlePay} style={{ background: product.accent, color: "#fff", border: "none", borderRadius: "14px", padding: "15px", fontWeight: "700", fontSize: "16px", cursor: "pointer", fontFamily: "inherit", transition: "opacity 0.15s" }}
-                onMouseEnter={e => e.target.style.opacity = "0.85"} onMouseLeave={e => e.target.style.opacity = "1"}>
-                Get Instant Access · ${product.price}
-              </button>
-              <div style={{ textAlign: "center", color: "#c7c7cc", fontSize: "12px", display: "flex", gap: "10px", justifyContent: "center" }}>
-                <span>🔒 Stripe secured</span><span>·</span><span>⚡ Instant delivery</span>
-              </div>
-            </div>
-          </>
-        )}
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: "26px", fontWeight: "800", color: "#111" }}>${product.price}</div>
+            {product.originalPrice && <div style={{ color: "#c7c7cc", fontSize: "13px", textDecoration: "line-through" }}>${product.originalPrice}</div>}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#6e6e73", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: "8px" }}>
+            Your Email
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => { setEmail(e.target.value); setError(""); }}
+            placeholder="you@example.com"
+            onKeyDown={e => e.key === "Enter" && handleCheckout()}
+            style={{
+              width: "100%", background: "#F5F5F7", border: "1.5px solid transparent",
+              borderRadius: "12px", color: "#111", padding: "13px 16px",
+              fontSize: "15px", outline: "none", boxSizing: "border-box",
+              fontFamily: "inherit",
+            }}
+            onFocus={e => e.target.style.border = `1.5px solid ${product.accent}`}
+            onBlur={e => e.target.style.border = "1.5px solid transparent"}
+          />
+          {error && <p style={{ color: "#FF375F", fontSize: "13px", marginTop: "6px" }}>{error}</p>}
+          <p style={{ color: "#c7c7cc", fontSize: "12px", marginTop: "6px" }}>Your download link will be sent here after payment.</p>
+        </div>
+
+        <button
+          onClick={handleCheckout}
+          disabled={loading}
+          style={{
+            width: "100%", background: loading ? "#6e6e73" : product.accent,
+            color: "#fff", border: "none", borderRadius: "14px", padding: "15px",
+            fontWeight: "700", fontSize: "16px", cursor: loading ? "not-allowed" : "pointer",
+            fontFamily: "inherit", transition: "opacity 0.15s", marginBottom: "12px",
+          }}
+        >
+          {loading ? "Redirecting to Stripe..." : `Continue to Payment · $${product.price}`}
+        </button>
+
+        <div style={{ textAlign: "center", color: "#c7c7cc", fontSize: "12px", display: "flex", gap: "10px", justifyContent: "center" }}>
+          <span>🔒 Stripe secured</span><span>·</span><span>⚡ Instant delivery</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ComingSoonModal({ product, onClose }) {
+  return (
+    <div onClick={(e) => e.target === e.currentTarget && onClose()} style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
+      backdropFilter: "blur(20px)", zIndex: 300,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      animation: "fadeIn 0.2s ease", padding: "20px",
+    }}>
+      <div style={{ background: "#fff", borderRadius: "24px", padding: "40px", width: "100%", maxWidth: "400px", boxShadow: "0 40px 80px rgba(0,0,0,0.18)", textAlign: "center" }}>
+        <div style={{ fontSize: "48px", marginBottom: "16px" }}>🚧</div>
+        <h2 style={{ fontSize: "22px", fontWeight: "800", color: "#111", marginBottom: "8px", letterSpacing: "-0.03em" }}>Coming Soon</h2>
+        <p style={{ color: "#6e6e73", fontSize: "15px", lineHeight: 1.6, marginBottom: "24px" }}>
+          <strong style={{ color: "#111" }}>{product.title}</strong> is almost ready. Check back soon!
+        </p>
+        <button onClick={onClose} style={{ background: "#111", color: "#fff", border: "none", borderRadius: "12px", padding: "12px 28px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", fontSize: "14px" }}>Got it</button>
       </div>
     </div>
   );
@@ -102,16 +140,29 @@ function CheckoutModal({ product, onClose }) {
 export default function Shop() {
   const navigate = useNavigate();
   const [tagFilter, setTagFilter] = useState("All");
-  const [checkout, setCheckout] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showComingSoon, setShowComingSoon] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     document.documentElement.style.width = "100%";
     document.body.style.margin = "0";
     document.body.style.overflowX = "hidden";
+    const link = document.createElement("link");
+    link.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
   }, []);
 
   const filtered = products.filter(p => tagFilter === "All" || p.tag === tagFilter);
+
+  const handleBuy = (product) => {
+    if (STRIPE_ENABLED.includes(product.title)) {
+      setSelectedProduct(product);
+    } else {
+      setShowComingSoon(product);
+    }
+  };
 
   return (
     <div style={{ minHeight: "100vh", width: "100%", background: "#F5F5F7", fontFamily: "'Poppins', -apple-system, sans-serif", color: "#111", overflowX: "hidden" }}>
@@ -125,6 +176,7 @@ export default function Shop() {
         .card:hover{transform:translateY(-6px)!important;box-shadow:0 24px 48px rgba(0,0,0,0.1)!important}
         .nav-link{cursor:pointer;transition:color 0.15s}
         .nav-link:hover{color:#111!important}
+        input:focus{border:1.5px solid #0A84FF!important;background:#fff!important}
         @media(max-width:768px){.pad{padding:48px 24px!important}}
       `}</style>
 
@@ -133,11 +185,12 @@ export default function Shop() {
         <div style={{ fontSize: "21px", fontWeight: "800", letterSpacing: "-0.04em", color: "#111", cursor: "pointer" }} onClick={() => navigate("/")}>zurya</div>
         <div style={{ display: "flex", gap: "32px", fontSize: "14px", color: "#6e6e73", fontWeight: "500" }}>
           <span className="nav-link" style={{ color: "#111", fontWeight: "700" }}>Shop</span>
+          <span className="nav-link" onClick={() => navigate("/reviews")}>Reviews</span>
           <span className="nav-link" onClick={() => navigate("/")}>Home</span>
         </div>
       </nav>
 
-      {/* SHOP HEADER */}
+      {/* HEADER */}
       <div className="pad" style={{ padding: "64px 64px 40px", maxWidth: "1200px", margin: "0 auto" }}>
         <button onClick={() => navigate("/")} style={{ background: "none", border: "none", color: "#6e6e73", fontSize: "14px", fontWeight: "500", cursor: "pointer", fontFamily: "inherit", marginBottom: "24px", display: "flex", alignItems: "center", gap: "6px", padding: 0 }}>
           ← Back to Home
@@ -153,14 +206,16 @@ export default function Shop() {
         </div>
       </div>
 
-      {/* PRODUCTS GRID */}
+      {/* PRODUCTS */}
       <div className="pad" style={{ padding: "0 64px 80px", maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ marginBottom: "20px" }}>
-          <p style={{ color: "#6e6e73", fontSize: "14px", fontWeight: "500" }}>{filtered.length} result{filtered.length !== 1 ? "s" : ""}</p>
-        </div>
+        <p style={{ color: "#6e6e73", fontSize: "14px", fontWeight: "500", marginBottom: "20px" }}>{filtered.length} result{filtered.length !== 1 ? "s" : ""}</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "18px" }}>
           {filtered.map((p, i) => (
-            <div key={p.id} className="card" style={{ background: "#fff", borderRadius: "20px", overflow: "hidden", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)", animation: `cardIn 0.4s ease ${i * 0.05}s both` }}>
+            <div key={p.id} className="card" style={{ background: "#fff", borderRadius: "20px", overflow: "hidden", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.05)", animation: `cardIn 0.4s ease ${i * 0.05}s both`, position: "relative" }}>
+              {/* Stripe enabled badge */}
+              {STRIPE_ENABLED.includes(p.title) && (
+                <div style={{ position: "absolute", top: "12px", right: "12px", background: "#30D158", color: "#fff", borderRadius: "6px", padding: "2px 8px", fontSize: "10px", fontWeight: "700", zIndex: 1 }}>AVAILABLE</div>
+              )}
               <div style={{ height: "5px", background: p.accent }} />
               <div style={{ padding: "26px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
@@ -177,10 +232,13 @@ export default function Shop() {
                     <span style={{ fontSize: "24px", fontWeight: "800", color: "#111", letterSpacing: "-0.02em" }}>${p.price}</span>
                     {p.originalPrice && <span style={{ color: "#c7c7cc", fontSize: "14px", textDecoration: "line-through" }}>${p.originalPrice}</span>}
                   </div>
-                  <button onClick={() => setCheckout(p)} style={{ background: p.accent, color: "#fff", border: "none", borderRadius: "980px", padding: "10px 22px", fontWeight: "700", fontSize: "14px", cursor: "pointer", fontFamily: "inherit", transition: "opacity 0.15s, transform 0.15s" }}
+                  <button
+                    onClick={() => handleBuy(p)}
+                    style={{ background: p.accent, color: "#fff", border: "none", borderRadius: "980px", padding: "10px 22px", fontWeight: "700", fontSize: "14px", cursor: "pointer", fontFamily: "inherit", transition: "opacity 0.15s, transform 0.15s" }}
                     onMouseEnter={e => { e.target.style.opacity = "0.85"; e.target.style.transform = "scale(0.97)"; }}
-                    onMouseLeave={e => { e.target.style.opacity = "1"; e.target.style.transform = "scale(1)"; }}>
-                    Get eBook →
+                    onMouseLeave={e => { e.target.style.opacity = "1"; e.target.style.transform = "scale(1)"; }}
+                  >
+                    {STRIPE_ENABLED.includes(p.title) ? "Get eBook →" : "Coming Soon"}
                   </button>
                 </div>
               </div>
@@ -195,7 +253,8 @@ export default function Shop() {
         <span style={{ color: "#555", fontSize: "13px" }}>© 2026 Zurya · All rights reserved</span>
       </div>
 
-      {checkout && <CheckoutModal product={checkout} onClose={() => setCheckout(null)} />}
+      {selectedProduct && <EmailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+      {showComingSoon && <ComingSoonModal product={showComingSoon} onClose={() => setShowComingSoon(null)} />}
     </div>
   );
 }
