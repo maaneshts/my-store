@@ -3,6 +3,7 @@ import Home from "./Home";
 import Shop from "./Shop";
 import Reviews from "./Reviews";
 import LeaveReview from "./LeaveReview";
+import Success from "./Success";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/reviews" element={<Reviews />} />
         <Route path="/leave-review" element={<LeaveReview />} />
+        <Route path="/success" element={<Success />} />
       </Routes>
     </BrowserRouter>
   );
